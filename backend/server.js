@@ -8,7 +8,11 @@ import connectDB from "./src/config/db.js";
 import chatRoutes from "./src/routes/chatRoutes.js";
 import uploadRoutes from "./src/routes/uploadRoutes.js";
 import historyRoutes from "./src/routes/historyRoutes.js";
+import { configDotenv } from "dotenv";
 
+configDotenv();
+
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 const app = express();
 const PORT = process.env.PORT || 5000;
 const __filename = fileURLToPath(import.meta.url);
@@ -21,10 +25,12 @@ if (!fs.existsSync(uploadsDir)) {
 
 await connectDB();
 
+console.log("Connected to CLIENT_URL " + CLIENT_URL);
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
-  }),
+    origin: CLIENT_URL,
+    credentials: true, // Allow cookies/auth if needed
+  })
 );
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
@@ -48,3 +54,6 @@ app.use((error, _req, res, _next) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+
+export default app;
