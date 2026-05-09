@@ -13,8 +13,25 @@ import ImageScreen  from "./screens/ImageScreen";
 import HistoryScreen from "./screens/HistoryScreen";
 import AboutScreen  from "./screens/AboutScreen";
 import DevProfileScreen from "./screens/DevProfileScreen";
+import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
+import { useState, useEffect } from "react";
 
 export default function App() {
+  const [authToken, setAuthToken] = useState(localStorage.getItem("token"));
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, [authToken]);
+
   return (
     <>
       {/* Animated background orbs (rendered behind everything via CSS z-index 0) */}
@@ -24,7 +41,9 @@ export default function App() {
 
       <Shell>
         <Routes>
-          <Route path="/"           element={<HomeScreen />}       />
+          <Route path="/login"       element={<LoginScreen setAuthToken={setAuthToken} />} />
+          <Route path="/register"    element={<RegisterScreen setAuthToken={setAuthToken} />} />
+          <Route path="/"            element={<HomeScreen />}       />
           <Route path="/chat"        element={<ChatScreen />}       />
           <Route path="/voice"       element={<VoiceScreen />}      />
           <Route path="/image"       element={<ImageScreen />}      />
