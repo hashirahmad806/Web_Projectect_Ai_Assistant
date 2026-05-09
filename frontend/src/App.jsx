@@ -11,6 +11,8 @@ import ChatScreen   from "./screens/ChatScreen";
 import VoiceScreen  from "./screens/VoiceScreen";
 import ImageScreen  from "./screens/ImageScreen";
 import HistoryScreen from "./screens/HistoryScreen";
+import AboutScreen  from "./screens/AboutScreen";
+import DevProfileScreen from "./screens/DevProfileScreen";
 
 export default function App() {
   return (
@@ -22,11 +24,13 @@ export default function App() {
 
       <Shell>
         <Routes>
-          <Route path="/"        element={<HomeScreen />}    />
-          <Route path="/chat"    element={<ChatScreen />}    />
-          <Route path="/voice"   element={<VoiceScreen />}   />
-          <Route path="/image"   element={<ImageScreen />}   />
-          <Route path="/history" element={<HistoryScreen />} />
+          <Route path="/"           element={<HomeScreen />}       />
+          <Route path="/chat"        element={<ChatScreen />}       />
+          <Route path="/voice"       element={<VoiceScreen />}      />
+          <Route path="/image"       element={<ImageScreen />}      />
+          <Route path="/history"     element={<HistoryScreen />}    />
+          <Route path="/about"       element={<AboutScreen />}      />
+          <Route path="/about/:slug" element={<DevProfileScreen />} />
         </Routes>
       </Shell>
     </>
