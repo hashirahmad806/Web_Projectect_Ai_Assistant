@@ -7,7 +7,9 @@ export async function upsertSession({
   answer,
   type = "text",
 }) {
-  const title = question.slice(0, 50) || "New Study Session";
+  const cleanQuestion = question?.trim() || "Uploaded an image for analysis";
+  const cleanAnswer = answer?.trim() || "No response received";
+  const title = cleanQuestion.slice(0, 50) || "New Study Session";
 
   const existing = await ChatHistory.findOne({ sessionId });
 
@@ -16,21 +18,21 @@ export async function upsertSession({
       sessionId,
       studentName,
       title,
-      lastQuestion: question,
+      lastQuestion: cleanQuestion,
       messages: [
-        { role: "user", content: question, type },
-        { role: "assistant", content: answer, type: "text" },
+        { role: "user", content: cleanQuestion, type },
+        { role: "assistant", content: cleanAnswer, type: "text" },
       ],
     });
   }
 
-  existing.lastQuestion = question;
+  existing.lastQuestion = cleanQuestion;
   existing.messages.push(
-    { role: "user", content: question, type },
-    { role: "assistant", content: answer, type: "text" },
+    { role: "user", content: cleanQuestion, type },
+    { role: "assistant", content: cleanAnswer, type: "text" },
   );
 
-  if (existing.title === "New Study Session" && question) {
+  if (existing.title === "New Study Session" && cleanQuestion) {
     existing.title = title;
   }
 
