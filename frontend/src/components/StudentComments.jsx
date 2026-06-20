@@ -1,8 +1,7 @@
 /**
  * StudentComments.jsx
  * Displays community-style comment cards from fellow students.
- * These show social proof and encourage new students to engage.
- * In a real app these would be fetched from the backend.
+ * Updated to use Lumina Academic design tokens.
  */
 
 const COMMENTS = [
@@ -50,45 +49,49 @@ const COMMENTS = [
 
 export default function StudentComments() {
   return (
-    <div className="space-y-4">
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* ── Section Header ──────────────────────── */}
-      <div className="flex items-center justify-between">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <h3 className="font-bold text-slate-100 text-base">
+          <h3 style={{ fontSize: 16, fontWeight: 700, color: "var(--on-surface)", margin: 0 }}>
             Student Community
           </h3>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p style={{ fontSize: 12, color: "var(--on-surface-variant)", marginTop: 3 }}>
             What fellow students are saying
           </p>
         </div>
-        <span className="badge-online">Live</span>
+        <span className="label-caps" style={{ padding: "4px 10px", borderRadius: "var(--radius-full)", background: "var(--primary-container)", color: "var(--on-primary-container)" }}>
+          Live
+        </span>
       </div>
 
       {/* ── Comment Cards ────────────────────────── */}
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         {COMMENTS.map(({ avatar, name, course, time, text, likes, tag, tagLabel }) => (
           <article
             key={name}
-            className="glass card-hover rounded-2xl border border-white/5 p-4 flex flex-col gap-3"
+            className="lumina-card"
+            style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12, borderRadius: "var(--radius-lg)" }}
           >
             {/* Header row */}
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/08 text-xl"
-                style={{ background: "rgba(255,255,255,0.08)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: "50%", background: "var(--surface-container-high)", 
+                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0
+              }}>
                 {avatar}
               </div>
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-slate-100 truncate">{name}</p>
-                <p className="text-xs text-slate-500 truncate">{course} · {time}</p>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <p style={{ fontSize: 14, fontWeight: 700, color: "var(--on-surface)", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{name}</p>
+                <p style={{ fontSize: 12, color: "var(--outline)", margin: 0 }}>{course} · {time}</p>
               </div>
-              <span className={`chip ${tag} ml-auto shrink-0`}>{tagLabel}</span>
             </div>
 
             {/* Comment text */}
-            <p className="text-sm leading-6 text-slate-300">"{text}"</p>
+            <p style={{ fontSize: 14, lineHeight: 1.6, color: "var(--on-surface-variant)", margin: 0 }}>"{text}"</p>
 
             {/* Like row */}
-            <div className="flex items-center gap-1.5 text-xs text-slate-500">
+            <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "var(--outline)" }}>
               <span>👍</span>
               <span>{likes} students found this helpful</span>
             </div>
@@ -97,12 +100,12 @@ export default function StudentComments() {
       </div>
 
       {/* ── CTA ──────────────────────────────────── */}
-      <div
-        className="rounded-2xl border border-indigo-500/20 p-4 text-center"
-        style={{ background: "rgba(99,102,241,0.06)" }}
-      >
-        <p className="text-sm text-slate-300">
-          🎓 Join <span className="font-semibold text-indigo-400">2,400+ students</span> already using AI to study smarter
+      <div style={{
+        background: "var(--surface-container)", borderRadius: "var(--radius-lg)", padding: "16px", textAlign: "center",
+        border: "1px solid var(--surface-container-highest)"
+      }}>
+        <p style={{ fontSize: 14, color: "var(--on-surface-variant)", margin: 0 }}>
+          🎓 Join <span style={{ fontWeight: 800, color: "var(--primary)" }}>2,400+ students</span> already using AI to study smarter
         </p>
       </div>
     </div>

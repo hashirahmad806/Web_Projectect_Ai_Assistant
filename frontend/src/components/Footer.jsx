@@ -1,6 +1,7 @@
 /**
  * Footer.jsx
  * Site-wide footer — displays team name, year, and quick nav links.
+ * Updated for Lumina Academic design system.
  */
 
 import { NavLink } from "react-router-dom";
@@ -22,8 +23,9 @@ export default function Footer() {
     <footer
       className="mt-auto w-full"
       style={{
-        background: "var(--bg-sidebar)",
-        borderTop: "1px solid rgba(255,255,255,0.06)",
+        background: "var(--surface-container-lowest)",
+        borderTop: "1px solid var(--surface-container-highest)",
+        fontFamily: "var(--font-family)",
       }}
     >
       <div className="max-w-5xl mx-auto px-6 py-8">
@@ -40,10 +42,10 @@ export default function Footer() {
               <GraduationCap size={18} />
             </div>
             <div>
-              <p className="text-sm font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
-                AI Student Assistant
+              <p className="text-sm font-bold text-[var(--on-surface)]">
+                Lumina Academic
               </p>
-              <p className="text-[11px] text-slate-400">Powered by Groq AI</p>
+              <p className="text-[11px] text-[var(--on-surface-variant)]">Powered by AI</p>
             </div>
           </div>
 
@@ -54,8 +56,8 @@ export default function Footer() {
                 key={to}
                 to={to}
                 className={({ isActive }) =>
-                  `text-xs font-medium transition-colors duration-150 ${
-                    isActive ? "text-[var(--primary)]" : "text-slate-400 hover:text-white"
+                  `text-xs font-bold transition-colors duration-150 ${
+                    isActive ? "text-[var(--primary)]" : "text-[var(--on-surface-variant)] hover:text-[var(--on-surface)]"
                   }`
                 }
               >
@@ -69,24 +71,24 @@ export default function Footer() {
             href="https://github.com/hashirahmad806"
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white transition-all duration-200 hover:-translate-y-0.5 flex-shrink-0"
-            style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)" }}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-[var(--on-surface-variant)] hover:text-[var(--on-surface)] hover:bg-[var(--surface-container)] transition-all duration-200 hover:-translate-y-0.5 flex-shrink-0"
+            style={{ background: "var(--surface-container-lowest)", border: "1px solid var(--outline-variant)" }}
           >
             <Github size={13} /> GitHub
           </a>
         </div>
 
         {/* Divider */}
-        <div className="my-5 h-px" style={{ background: "rgba(255,255,255,0.06)" }} />
+        <div className="my-5 h-px" style={{ background: "var(--outline-variant)", opacity: 0.5 }} />
 
         {/* Bottom row */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-center">
-          <p className="text-[11px] text-slate-500">
-            © {year} AI Student Assistant. All rights reserved.
+          <p className="text-[11px] text-[var(--on-surface-variant)]">
+            © {year} Lumina Academic. All rights reserved.
           </p>
-          <p className="text-[11px] text-slate-500 flex items-center gap-1.5">
-            Built with <Heart size={10} className="text-red-400" fill="#f87171" /> by{" "}
-            <NavLink to="/about" className="text-slate-400 hover:text-[var(--primary)] transition-colors font-medium inline-flex items-center gap-1">
+          <p className="text-[11px] text-[var(--on-surface-variant)] flex items-center gap-1.5">
+            Built with <Heart size={10} className="text-red-500" fill="#ef4444" /> by{" "}
+            <NavLink to="/about" className="text-[var(--primary)] hover:text-[#005a3b] transition-colors font-bold inline-flex items-center gap-1">
               <Users size={10} /> Team of 4
             </NavLink>
           </p>

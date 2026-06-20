@@ -35,10 +35,14 @@ export async function analyzeImageQuestion(req, res, next) {
       return res.status(400).json({ message: "Image file is required." });
     }
 
-    const {
-      question = "Read the image carefully, extract the full question, and solve it step by step.",
+    let {
+      question,
       sessionId = "default-session",
     } = req.body;
+
+    if (!question || !question.trim()) {
+      question = "Read the image carefully, extract the full question, and solve it step by step.";
+    }
 
     if (!process.env.GROQ_API_KEY) {
       const fallback =
@@ -71,7 +75,7 @@ export async function analyzeImageQuestion(req, res, next) {
       model:
         process.env.GROQ_VISION_MODEL ||
         process.env.GROQ_MODEL ||
-        "meta-llama/llama-4-scout-17b-16e-instruct",
+        "llama-3.2-11b-vision-preview",
       temperature: 0.2,
       messages: [
         {

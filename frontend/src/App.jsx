@@ -1,20 +1,20 @@
 /**
  * App.jsx — Root application component
- * Wires up React Router with the Shell layout and all screen components.
- * Each screen is a separate file in src/screens/ for clean architecture.
+ * Home page renders as a standalone full-width landing page.
+ * All other screens use the Shell sidebar layout.
  */
 
 import { Route, Routes } from "react-router-dom";
-import Shell        from "./components/Shell";
-import HomeScreen   from "./screens/HomeScreen";
-import ChatScreen   from "./screens/ChatScreen";
-import VoiceScreen  from "./screens/VoiceScreen";
-import ImageScreen  from "./screens/ImageScreen";
-import HistoryScreen from "./screens/HistoryScreen";
-import AboutScreen  from "./screens/AboutScreen";
+import Shell           from "./components/Shell";
+import HomeScreen      from "./screens/HomeScreen";
+import ChatScreen      from "./screens/ChatScreen";
+import VoiceScreen     from "./screens/VoiceScreen";
+import ImageScreen     from "./screens/ImageScreen";
+import HistoryScreen   from "./screens/HistoryScreen";
+import AboutScreen     from "./screens/AboutScreen";
 import DevProfileScreen from "./screens/DevProfileScreen";
-import LoginScreen from "./screens/LoginScreen";
-import RegisterScreen from "./screens/RegisterScreen";
+import LoginScreen     from "./screens/LoginScreen";
+import RegisterScreen  from "./screens/RegisterScreen";
 import { useState, useEffect } from "react";
 
 export default function App() {
@@ -24,34 +24,33 @@ export default function App() {
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (e) {
-        console.error(e);
-      }
+      try { setUser(JSON.parse(savedUser)); }
+      catch (e) { console.error(e); }
     }
   }, [authToken]);
 
   return (
     <>
-      {/* Animated background orbs (rendered behind everything via CSS z-index 0) */}
-      <div className="orb orb-1" aria-hidden />
-      <div className="orb orb-2" aria-hidden />
-      <div className="orb orb-3" aria-hidden />
+      <Routes>
+        {/* ── Standalone full-width pages (no sidebar) ── */}
+        <Route path="/"         element={<HomeScreen />} />
+        <Route path="/login"    element={<LoginScreen setAuthToken={setAuthToken} />} />
+        <Route path="/register" element={<RegisterScreen setAuthToken={setAuthToken} />} />
 
-      <Shell>
-        <Routes>
-          <Route path="/login"       element={<LoginScreen setAuthToken={setAuthToken} />} />
-          <Route path="/register"    element={<RegisterScreen setAuthToken={setAuthToken} />} />
-          <Route path="/"            element={<HomeScreen />}       />
-          <Route path="/chat"        element={<ChatScreen />}       />
-          <Route path="/voice"       element={<VoiceScreen />}      />
-          <Route path="/image"       element={<ImageScreen />}      />
-          <Route path="/history"     element={<HistoryScreen />}    />
-          <Route path="/about"       element={<AboutScreen />}      />
-          <Route path="/about/:slug" element={<DevProfileScreen />} />
-        </Routes>
-      </Shell>
+        {/* ── App pages with sidebar Shell ── */}
+        <Route path="/*" element={
+          <Shell>
+            <Routes>
+              <Route path="/chat"        element={<ChatScreen />}       />
+              <Route path="/voice"       element={<VoiceScreen />}      />
+              <Route path="/image"       element={<ImageScreen />}      />
+              <Route path="/history"     element={<HistoryScreen />}    />
+              <Route path="/about"       element={<AboutScreen />}      />
+              <Route path="/about/:slug" element={<DevProfileScreen />} />
+            </Routes>
+          </Shell>
+        } />
+      </Routes>
     </>
   );
 }

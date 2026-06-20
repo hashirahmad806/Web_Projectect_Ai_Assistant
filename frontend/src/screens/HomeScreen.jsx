@@ -1,25 +1,22 @@
 /**
  * HomeScreen.jsx
- * Landing dashboard — hero banner, feature cards, subject guide,
- * and the student community comments section.
+ * Standalone landing page using the Lumina Academic design system.
  */
 
-import { Bot, Camera, History, Mic, Sparkles, ArrowRight, BookOpen, Star } from "lucide-react";
-import { NavLink } from "react-router-dom";
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
+import {
+  Bot, Camera, History, Mic, Sparkles, ArrowRight,
+  BookOpen, Star, Code2, FlaskConical, BarChart3, Zap, GraduationCap,
+  TerminalSquare, Database, Network, Flame, CheckCircle, Clock2, MonitorPlay
+} from "lucide-react";
+import { Link } from "react-router-dom";
 import StudentComments from "../components/StudentComments";
-import StudyTips from "../components/StudyTips";
 
-/* ── Feature cards ─────────────────────────────────────── */
 const FEATURES = [
   {
     icon: Sparkles,
     title: "Ask Anything",
     desc: "Get step-by-step help for assignments, concepts, exam prep, and more in any subject.",
     to: "/chat",
-    gradient: "from-indigo-600 to-violet-600",
-    glow: "rgba(99,102,241,0.4)",
     badge: "Most Used",
   },
   {
@@ -27,8 +24,6 @@ const FEATURES = [
     title: "Solve from Image",
     desc: "Upload a worksheet, handwritten note, or textbook snap. AI reads and solves it for you.",
     to: "/image",
-    gradient: "from-cyan-600 to-teal-600",
-    glow: "rgba(6,182,212,0.4)",
     badge: "Vision AI",
   },
   {
@@ -36,30 +31,24 @@ const FEATURES = [
     title: "Voice Mode",
     desc: "Speak your question hands-free. Perfect for revision while commuting or multitasking.",
     to: "/voice",
-    gradient: "from-violet-600 to-purple-700",
-    glow: "rgba(139,92,246,0.4)",
     badge: "Speech AI",
   },
   {
     icon: History,
     title: "Study History",
-    desc: "Every question is saved. Revisit your sessions before exams for a quick, targeted review.",
+    desc: "Every session is saved. Revisit your sessions before exams for quick, targeted review.",
     to: "/history",
-    gradient: "from-amber-600 to-orange-600",
-    glow: "rgba(245,158,11,0.4)",
     badge: "Auto-Save",
   },
 ];
 
-/* ── Stats ─────────────────────────────────────────────── */
 const STATS = [
-  { value: "2,400+", label: "Active Students" },
+  { value: "2,400+",  label: "Active Students"    },
   { value: "18,000+", label: "Questions Answered" },
-  { value: "12+", label: "Subjects Covered" },
-  { value: "4.9 ★", label: "Student Rating" },
+  { value: "12+",     label: "Subjects Covered"   },
+  { value: "4.9 ★",   label: "Student Rating"     },
 ];
 
-/* ── Exam tips ─────────────────────────────────────────── */
 const EXAM_TIPS = [
   { emoji: "🎯", tip: "Ask the AI to quiz you — type 'Give me 5 MCQs on Newton's laws'" },
   { emoji: "📝", tip: "Request summaries — 'Summarise Chapter 5 of thermodynamics in 10 points'" },
@@ -67,156 +56,320 @@ const EXAM_TIPS = [
   { emoji: "💬", tip: "Ask follow-ups — 'Can you explain that with a simpler example?'" },
 ];
 
+const HOW_IT_WORKS = [
+  "Type, speak, or upload an image of your question",
+  "AI analyses and explains it step-by-step",
+  "Review the answer and ask follow-ups",
+  "Come back later via Study History",
+];
+
+const CS_FEATURES = [
+  {
+    icon: TerminalSquare,
+    title: "Code Debugger & Explainer",
+    desc: "Paste your broken code and get instant fixes with line-by-line logic explanations for Python, Java, C++, and more."
+  },
+  {
+    icon: Database,
+    title: "Data Science Lab",
+    desc: "Get help with complex SQL queries, Pandas operations, and intuitive explanations of statistical models and ML concepts."
+  },
+  {
+    icon: Network,
+    title: "Algorithm Visualizer",
+    desc: "Visualize sorting algorithms, tree traversals, and graph theory step-by-step to truly understand how they work under the hood."
+  }
+];
+
+const SUCCESS_STORIES = [
+  {
+    icon: Flame,
+    title: "30-Day Study Streak",
+    desc: "Usman increased his Physics grade from B to A+ in just 4 weeks."
+  },
+  {
+    icon: CheckCircle,
+    title: "Exam Ready",
+    desc: "Amina mastered 5 years of past papers for Computer Science."
+  },
+  {
+    icon: Clock2,
+    title: "24/7 Support",
+    desc: "Never stuck on a homework problem again. Instant help whenever you need it."
+  }
+];
+
 export default function HomeScreen() {
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    let ctx = gsap.context(() => {
-      const tl = gsap.timeline();
-      
-      tl.from(".hero-content", {
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power4.out",
-        stagger: 0.15
-      })
-      .from(".stat-card", {
-        scale: 0.8,
-        opacity: 0,
-        duration: 0.6,
-        ease: "back.out(1.5)",
-        stagger: 0.1
-      }, "-=0.5")
-      .from(".feature-card", {
-        y: 30,
-        opacity: 0,
-        duration: 0.7,
-        ease: "power3.out",
-        stagger: 0.1
-      }, "-=0.3");
-      
-    }, containerRef);
-    
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <div ref={containerRef} className="space-y-8">
+    <div style={{ background: "var(--surface)", minHeight: "100vh", position: "relative" }}>
+      
+      {/* ══ FLUID GRADIENT BACKGROUND ════════════════════ */}
+      <div style={{
+        position: "absolute", top: 0, left: 0, right: 0, height: "600px", pointerEvents: "none", zIndex: 0,
+        background: "radial-gradient(ellipse at 50% -20%, var(--surface-container-high) 0%, transparent 70%)"
+      }} />
 
-      {/* ── Hero Banner ──────────────────────────────── */}
-      <section className="relative overflow-hidden rounded-2xl p-7 lg:p-10"
-        style={{ background: "var(--primary-light)" }}>
+      {/* ══ GLASS NAVBAR ════════════════════════════════ */}
+      <nav className="lumina-glass-nav" style={{
+        position: "sticky", top: 0, zIndex: 50,
+      }}>
+        <div style={{ 
+          maxWidth: "var(--container-max)", margin: "0 auto", padding: "0 var(--spacing-stack-md)", 
+          height: 64, display: "flex", alignItems: "center", justifyContent: "space-between" 
+        }}>
+          {/* Logo */}
+          <Link to="/" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none" }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: "var(--radius-sm)", background: "var(--primary)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <GraduationCap size={18} color="white" />
+            </div>
+            <span style={{ fontWeight: 800, fontSize: 18, color: "var(--on-surface)", letterSpacing: "-0.02em" }}>
+              Lumina Academic
+            </span>
+          </Link>
 
-        <div className="relative z-10">
-          <div className="hero-content flex items-center gap-2 mb-4">
-            <span className="chip chip-purple">🎓 AI-Powered</span>
-            <span className="chip chip-cyan">Free to Use</span>
+          {/* Links & Buttons */}
+          <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+            <div className="hidden md:flex" style={{ gap: 24 }}>
+              {["Features", "Community", "How It Works", "Pricing"].map(item => (
+                <a key={item} href={`#${item.toLowerCase().replace(/\s/g, "")}`} style={{
+                  fontSize: 14, fontWeight: 600, color: "var(--on-surface-variant)", textDecoration: "none"
+                }}>{item}</a>
+              ))}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <Link to="/login" style={{ fontSize: 14, fontWeight: 700, color: "var(--primary)", textDecoration: "none", padding: "8px 16px" }}>
+                Login
+              </Link>
+              <Link to="/register" className="btn-primary">
+                Get Started
+              </Link>
+            </div>
           </div>
-          <h1 className="hero-content text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight"
-            style={{ fontFamily: "'Playfair Display', serif" }}>
-            Your Personal{" "}
-            <span className="gradient-text glow-text">AI Tutor</span>
-            <br />for Every Subject
+        </div>
+      </nav>
+
+      {/* ══ HERO SECTION ════════════════════════════════ */}
+      <section style={{ position: "relative", zIndex: 1, padding: "80px var(--spacing-stack-md)", textAlign: "center" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          
+          <div style={{ display: "flex", justifyContent: "center", gap: 12, marginBottom: 32 }}>
+            <span className="label-caps" style={{
+              padding: "6px 14px", borderRadius: "var(--radius-full)",
+              background: "var(--surface-container)", color: "var(--primary)"
+            }}>
+              🎓 Optimistic Learning
+            </span>
+            <span className="label-caps" style={{
+              padding: "6px 14px", borderRadius: "var(--radius-full)",
+              background: "var(--tertiary-container)", color: "var(--on-tertiary-container)"
+            }}>
+              Free to Use
+            </span>
+          </div>
+
+          <h1 className="display-lg" style={{ color: "var(--on-surface)", marginBottom: 24 }}>
+            Achieve your flow state.<br/>
+            Your intelligent <span style={{ color: "var(--primary)" }}>AI Tutor</span>.
           </h1>
-          <p className="hero-content mt-4 max-w-2xl text-sm sm:text-base text-slate-700 leading-7">
-            Chat with AI, speak your questions, upload images of problems, and keep your
-            study sessions saved — all from one beautiful dashboard designed for students.
+
+          <p className="body-lg" style={{ color: "var(--on-surface-variant)", maxWidth: 640, margin: "0 auto 40px" }}>
+            Bridge the gap between academic rigor and modern technology. Ask questions, speak naturally, or upload problems—all in one distraction-free environment.
           </p>
-          <div className="hero-content mt-6 flex flex-wrap gap-3">
-            <NavLink to="/chat"
-              className="btn-primary inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm">
-              <Bot size={16} /> Start Chatting
-            </NavLink>
-            <NavLink to="/image"
-              className="btn-secondary inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm">
-              <Camera size={16} /> Upload a Problem
-            </NavLink>
+
+          <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
+            <Link to="/chat" className="btn-primary" style={{ padding: "14px 28px", fontSize: 16 }}>
+              <Bot size={18} /> Start Learning Now
+            </Link>
+            <Link to="/image" className="btn-secondary" style={{ padding: "14px 28px", fontSize: 16 }}>
+              <Camera size={18} /> Solve from Image
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ── Stats Row ────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {STATS.map(({ value, label }) => (
-          <div key={label} className="stat-card glass card-hover rounded-2xl p-4 text-center border border-white/5">
-            <p className="text-xl sm:text-2xl font-extrabold gradient-text">{value}</p>
-            <p className="text-xs text-slate-500 mt-1">{label}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* ── Feature Cards ─────────────────────────────── */}
-      <div>
-        <h2 className="text-base font-bold text-slate-800 mb-4"
-          style={{ fontFamily: "'Playfair Display', serif" }}>
-          Everything you need to study smarter
-        </h2>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {FEATURES.map(({ icon: Icon, title, desc, to, gradient, glow, badge }) => (
-            <NavLink key={title} to={to}
-              className="feature-card glass card-hover rounded-2xl border border-white/5 p-5 flex flex-col gap-4 group">
-              <div className="flex items-center justify-between">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl text-white shrink-0"
-                  style={{ background: "var(--primary)" }}>
-                  <Icon size={20} />
-                </div>
-                <span className="chip chip-purple text-[10px]">{badge}</span>
-              </div>
-              <div>
-                <h3 className="font-bold text-slate-800 text-sm mb-1">{title}</h3>
-                <p className="text-xs leading-5 text-slate-600">{desc}</p>
-              </div>
-              <div className="flex items-center gap-1 text-xs text-primary-dark font-semibold mt-auto
-                group-hover:gap-2 transition-all">
-                Open <ArrowRight size={13} />
-              </div>
-            </NavLink>
+      {/* ══ STATS ═══════════════════════════════════════ */}
+      <section style={{ position: "relative", zIndex: 1, padding: "0 var(--spacing-stack-md) 64px" }}>
+        <div style={{ maxWidth: "var(--container-max)", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 24 }}>
+          {STATS.map(({ value, label }) => (
+            <div key={label} className="lumina-card" style={{ padding: "32px 24px", textAlign: "center" }}>
+              <p style={{ fontSize: 36, fontWeight: 800, color: "var(--primary)", marginBottom: 8, letterSpacing: "-0.03em" }}>{value}</p>
+              <p className="label-caps" style={{ color: "var(--on-surface-variant)" }}>{label}</p>
+            </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* ── Two-column: Tips + Exam Guide ─────────────── */}
-      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-        <div className="space-y-6">
-          {/* Exam Prompt Ideas */}
-          <div className="glass rounded-2xl border border-slate-200 p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <BookOpen size={16} className="text-slate-600" />
-              <h3 className="text-sm font-bold text-slate-800">
-                Smart prompts to try
-              </h3>
-            </div>
-            <div className="grid sm:grid-cols-2 gap-3">
-              {EXAM_TIPS.map(({ emoji, tip }) => (
-                <div key={tip}
-                  className="rounded-xl border border-slate-200 bg-white p-3 flex gap-3 items-start">
-                  <span className="text-lg shrink-0">{emoji}</span>
-                  <p className="text-xs leading-5 text-slate-700">{tip}</p>
-                </div>
+      {/* ══ MAIN CONTENT (FEATURES + SIDEBAR) ════════════ */}
+      <section id="features" style={{ position: "relative", zIndex: 1, padding: "0 var(--spacing-stack-md) 64px" }}>
+        <div style={{ maxWidth: "var(--container-max)", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 340px", gap: 32 }}>
+          
+          {/* LEFT COLUMN: Features & Community */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+            <h2 className="headline-md" style={{ color: "var(--on-surface)", marginBottom: 8 }}>
+              Everything you need to study smarter
+            </h2>
+            
+            {/* Feature Cards Grid */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+              {FEATURES.map(({ icon: Icon, title, desc, to, badge }) => (
+                <Link key={title} to={to} className="lumina-card" style={{
+                  padding: 24, textDecoration: "none", display: "flex", flexDirection: "column", gap: 16
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div style={{ width: 48, height: 48, borderRadius: "var(--radius-lg)", background: "var(--surface-container)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <Icon size={24} color="var(--primary)" />
+                    </div>
+                    <span className="label-caps" style={{ padding: "4px 10px", borderRadius: "var(--radius-full)", background: "var(--surface)", color: "var(--tertiary)", border: "1px solid var(--outline-variant)" }}>
+                      {badge}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: 18, fontWeight: 700, color: "var(--on-surface)", marginBottom: 8 }}>{title}</h3>
+                    <p className="body-md" style={{ color: "var(--on-surface-variant)" }}>{desc}</p>
+                  </div>
+                </Link>
               ))}
+            </div>
+
+            {/* Student Community */}
+            <div id="community" style={{ marginTop: 16 }}>
+              <StudentComments />
             </div>
           </div>
 
-          {/* Student comments */}
-          <StudentComments />
-        </div>
+          {/* RIGHT COLUMN: Sidebar Info */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+            
+            {/* Smart Prompts */}
+            <div className="lumina-card" style={{ padding: 24 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+                <BookOpen size={20} color="var(--primary)" />
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: "var(--on-surface)" }}>Smart Prompts</h3>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                {EXAM_TIPS.map(({ emoji, tip }) => (
+                  <div key={tip} style={{ display: "flex", gap: 12 }}>
+                    <span style={{ fontSize: 20 }}>{emoji}</span>
+                    <p style={{ fontSize: 14, color: "var(--on-surface-variant)", lineHeight: 1.5 }}>{tip}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-        {/* Right sidebar tips */}
-        <div className="animate-slide-left delay-200">
-          <StudyTips />
-        </div>
-      </div>
+            {/* How It Works Timeline */}
+            <div className="lumina-card" id="howitworks" style={{ padding: 24 }}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: "var(--on-surface)", marginBottom: 20 }}>How it works</h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: 24, position: "relative" }}>
+                
+                {/* Vertical Line */}
+                <div style={{ position: "absolute", left: 15, top: 10, bottom: 10, width: 2, background: "repeating-linear-gradient(to bottom, var(--outline-variant) 0, var(--outline-variant) 4px, transparent 4px, transparent 8px)" }} />
+                
+                {HOW_IT_WORKS.map((step, i) => (
+                  <div key={step} style={{ display: "flex", gap: 16, alignItems: "flex-start", position: "relative", zIndex: 2 }}>
+                    <div style={{ 
+                      width: 32, height: 32, borderRadius: "50%", background: "var(--primary)", color: "white", 
+                      display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14, flexShrink: 0
+                    }}>
+                      {i + 1}
+                    </div>
+                    <p style={{ fontSize: 15, color: "var(--on-surface-variant)", paddingTop: 4 }}>{step}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-      {/* ── Footer note ───────────────────────────────── */}
-      <div className="glass rounded-2xl border border-slate-200 p-4 flex items-center gap-3 text-xs text-slate-600">
-        <Star size={14} className="text-amber-500 shrink-0" />
-        <p>
-          Powered by <span className="text-slate-800 font-semibold">Groq AI</span> with
-          llama-3 — fast, accurate answers for students at every level.
-          Your questions are saved securely in MongoDB.
-        </p>
-      </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══ CS & DATA SCIENCE ═════════════════════════════ */}
+      <section style={{ padding: "80px var(--spacing-stack-md)", background: "var(--surface-container-lowest)" }}>
+        <div style={{ maxWidth: "var(--container-max)", margin: "0 auto", textAlign: "center" }}>
+          
+          <h2 className="headline-md" style={{ color: "var(--on-surface)", marginBottom: 16, fontSize: 36, letterSpacing: "-0.02em" }}>
+            Tailored for CS & Data Science
+          </h2>
+          <p className="body-lg" style={{ color: "var(--on-surface-variant)", maxWidth: 640, margin: "0 auto 48px" }}>
+            Master complex logic and data structures with specialized tools built for the next generation of engineers.
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, marginBottom: 48, textAlign: "left" }}>
+            {CS_FEATURES.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="lumina-card" style={{ padding: 32, background: "var(--surface)" }}>
+                <div style={{ width: 48, height: 48, borderRadius: "var(--radius-lg)", background: "var(--surface-container)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
+                  <Icon size={24} color="var(--primary)" />
+                </div>
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: "var(--on-surface)", marginBottom: 12 }}>{title}</h3>
+                <p className="body-md" style={{ color: "var(--on-surface-variant)" }}>{desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="lumina-card" style={{ padding: "24px 48px", display: "flex", alignItems: "center", justifyContent: "center", gap: 32, flexWrap: "wrap", background: "var(--surface)" }}>
+            <span className="label-caps" style={{ color: "var(--on-surface-variant)", letterSpacing: "0.1em" }}>SUPPORTED TECH STACK</span>
+            <div style={{ display: "flex", gap: 24, alignItems: "center", color: "var(--primary)", fontWeight: 700, fontSize: 14 }}>
+              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><Code2 size={16}/> Python</span>
+              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><TerminalSquare size={16}/> JavaScript</span>
+              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><Database size={16}/> SQL</span>
+              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><Network size={16}/> Git</span>
+              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><MonitorPlay size={16}/> React</span>
+              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><FlaskConical size={16}/> Java</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══ SUCCESS STORIES CTA ═══════════════════════════ */}
+      <section style={{ padding: "80px var(--spacing-stack-md)", background: "var(--surface)" }}>
+        <div style={{ maxWidth: "var(--container-max)", margin: "0 auto", textAlign: "center" }}>
+          
+          <h2 className="headline-md" style={{ color: "var(--on-surface)", marginBottom: 16, fontSize: 36, letterSpacing: "-0.02em" }}>
+            Join thousands of successful students
+          </h2>
+          <p className="body-lg" style={{ color: "var(--on-surface-variant)", maxWidth: 640, margin: "0 auto 48px" }}>
+            See how students are reaching their academic goals with AI Tutor.
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, marginBottom: 48, textAlign: "left" }}>
+            {SUCCESS_STORIES.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="lumina-card" style={{ padding: 32, background: "var(--surface-container-low)" }}>
+                <div style={{ width: 48, height: 48, borderRadius: "var(--radius-lg)", background: "var(--primary-container)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
+                  <Icon size={24} color="var(--on-primary-container)" />
+                </div>
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: "var(--on-surface)", marginBottom: 12 }}>{title}</h3>
+                <p className="body-md" style={{ color: "var(--on-surface-variant)" }}>{desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <Link to="/register" className="btn-primary" style={{ padding: "16px 32px", fontSize: 18, borderRadius: "var(--radius-full)" }}>
+            Start Your Journey
+          </Link>
+        </div>
+      </section>
+
+      {/* ══ FOOTER ══════════════════════════════════════ */}
+      <footer style={{ background: "var(--surface-container-lowest)", padding: "48px var(--spacing-stack-md)", borderTop: "1px solid var(--surface-container-highest)" }}>
+        <div style={{ maxWidth: "var(--container-max)", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 24 }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+              <GraduationCap size={20} color="var(--primary)" />
+              <span style={{ fontWeight: 800, fontSize: 18, color: "var(--on-surface)" }}>Lumina Academic</span>
+            </div>
+            <p className="body-md" style={{ color: "var(--on-surface-variant)" }}>
+              © {new Date().getFullYear()} Lumina Academic. Study Smarter.
+            </p>
+          </div>
+          <div style={{ display: "flex", gap: 24 }}>
+            {["Privacy Policy", "Terms of Service", "Help Center"].map(link => (
+              <a key={link} href="#" style={{ fontSize: 14, fontWeight: 600, color: "var(--outline)", textDecoration: "none" }}>{link}</a>
+            ))}
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
