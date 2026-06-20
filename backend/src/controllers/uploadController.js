@@ -55,10 +55,10 @@ export async function analyzeImageQuestion(req, res, next) {
         type: "image",
       });
 
-      return res.json({ reply: fallback, imagePath: file.path });
+      return res.json({ reply: fallback, imagePath: file.originalname });
     }
 
-    const imageBuffer = await fs.readFile(file.path);
+    const imageBuffer = file.buffer;
 
     if (imageBuffer.length > 2.8 * 1024 * 1024) {
       return res.status(400).json({
@@ -140,7 +140,7 @@ Conclusion: ...`,
 
     res.json({
       reply,
-      imagePath: file.path,
+      imagePath: file.originalname,
     });
   } catch (error) {
     if (

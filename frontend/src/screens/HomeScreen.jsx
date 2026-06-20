@@ -204,7 +204,7 @@ export default function HomeScreen() {
 
       {/* ══ MAIN CONTENT (FEATURES + SIDEBAR) ════════════ */}
       <section id="features" style={{ position: "relative", zIndex: 1, padding: "0 var(--spacing-stack-md) 64px" }}>
-        <div style={{ maxWidth: "var(--container-max)", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 340px", gap: 32 }}>
+        <div className="grid lg:grid-cols-[1fr_340px] gap-8" style={{ maxWidth: "var(--container-max)", margin: "0 auto" }}>
           
           {/* LEFT COLUMN: Features & Community */}
           <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
@@ -213,7 +213,7 @@ export default function HomeScreen() {
             </h2>
             
             {/* Feature Cards Grid */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {FEATURES.map(({ icon: Icon, title, desc, to, badge }) => (
                 <Link key={title} to={to} className="lumina-card" style={{
                   padding: 24, textDecoration: "none", display: "flex", flexDirection: "column", gap: 16
@@ -296,7 +296,7 @@ export default function HomeScreen() {
             Master complex logic and data structures with specialized tools built for the next generation of engineers.
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, marginBottom: 48, textAlign: "left" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 24, marginBottom: 48, textAlign: "left" }}>
             {CS_FEATURES.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="lumina-card" style={{ padding: 32, background: "var(--surface)" }}>
                 <div style={{ width: 48, height: 48, borderRadius: "var(--radius-lg)", background: "var(--surface-container)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
@@ -333,7 +333,7 @@ export default function HomeScreen() {
             See how students are reaching their academic goals with AI Tutor.
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, marginBottom: 48, textAlign: "left" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 24, marginBottom: 48, textAlign: "left" }}>
             {SUCCESS_STORIES.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="lumina-card" style={{ padding: 32, background: "var(--surface-container-low)" }}>
                 <div style={{ width: 48, height: 48, borderRadius: "var(--radius-lg)", background: "var(--primary-container)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
