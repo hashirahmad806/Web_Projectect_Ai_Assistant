@@ -1,12 +1,12 @@
 /**
  * StudentComments.jsx
  * Displays community-style comment cards from fellow students.
- * Updated to use Lumina Academic design tokens.
+ * Updated to use Lumina Academic design tokens with profile images.
  */
 
 const COMMENTS = [
   {
-    avatar: "👨‍💻",
+    avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuAXM7tTJ9mlIuAvIcXi_F7bc-nO4GwnyHFLUFtRxzfskZot9oyHd95PNnVaBddK1b8J-68WxCywv2Hh9RuYaW8R4Q0ZWsKrq8dQWcKk8cVSSWX1gLQKRc7wF9F1z5pp0M6CNgvguH1IIjyyEv2Dmvn_HgCy--z8aVkqsrbMt1li8WWFzqyiH_Q-bXpg_ZrAZ7Gu1RD6YPmqaLzRVQI0anDnc-31rYfXN_va62p3-loTo3VJ56OWRqn2MYkhgNPcYj7VLKeOn07PG9Ty",
     name: "Ali Hassan",
     course: "CS Final Year",
     time: "2 hours ago",
@@ -16,7 +16,7 @@ const COMMENTS = [
     tagLabel: "Computer Science",
   },
   {
-    avatar: "👩‍🔬",
+    avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuDlCD55xwUE0aijhgvD8hwjkT3tt2HKMEoOZTLYOHZjkB-I0y5iliLFCe_U04LbQuEB2tsvNk19Q7vEH-bjBgmfAKuhHMuyZTxXmAGkW1vR4oVoccGbCZrW5qvG424P9kH38oigdFWi2K0J5ZKxUvgSgFl1JyfObqZeHpWD0d-blAgO6cy3PE96d1QM222BYbv6WMlxlmtjFCQ_TUEh_WgnfrndyYqmtNcSvvK6xNI59jIfU4LOh6morUNhPu6bP_zr7DJuk4I75rlg",
     name: "Sara Khan",
     course: "Physics 2nd Year",
     time: "5 hours ago",
@@ -26,7 +26,7 @@ const COMMENTS = [
     tagLabel: "Physics",
   },
   {
-    avatar: "🧑‍📚",
+    avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuB0bL84cVEOG7rjhparGvhVFWrdE4u-ALMovL2ndMM3RHVTzCE8uuQv5iPcbPrFZex9AGnkpPf2WPu2E-GCm_ov1UD1kUbeIxaHaDV_SiquM0uX8CIGJYNs-_rH_fERT4m-GcKlE4SQn477wgtf7CR4dEsFNl-WQW6qHbSUEjB9Oqjr1v4cauN8ptc3NZe0V8dwgQf-nMmldGF0d-Rl5Gws3NjQ_onhpSkMrA8qoKDPav6c34yqU07obIPiKTRFc550gZS7_SaVkCto",
     name: "Usman Tariq",
     course: "Pre-Medical",
     time: "Yesterday",
@@ -36,7 +36,7 @@ const COMMENTS = [
     tagLabel: "Biology",
   },
   {
-    avatar: "👩‍💼",
+    avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCfeBzyryu-y0hdG9xFa3nxyyryzxNdmAz0-VwSDkywNyb6OAQninmRUmEz49JigR49vxe8BkQyWqhPlLeROaO-C4H96XjFRAnO3AFbG7rgf6tnGgE_NhJmPA8rTiEHElP7Rd0W-1sFSvXYRbzlL6wU1o4wnmAVrK0-EG_6U2ZOoexSvAPfkGxTDp-wruEn-2f1yGym5Kib_fXvnUQCwzmxHN35wVqN92Rx34rBuRiPfWzrIvkfz0cK6eIIBeWtLFQwHDTyF8Gi10K2",
     name: "Fatima Malik",
     course: "Commerce A-Levels",
     time: "2 days ago",
@@ -66,7 +66,7 @@ export default function StudentComments() {
       </div>
 
       {/* ── Comment Cards ────────────────────────── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
         {COMMENTS.map(({ avatar, name, course, time, text, likes, tag, tagLabel }) => (
           <article
             key={name}
@@ -75,12 +75,14 @@ export default function StudentComments() {
           >
             {/* Header row */}
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{
-                width: 40, height: 40, borderRadius: "50%", background: "var(--surface-container-high)", 
-                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0
-              }}>
-                {avatar}
-              </div>
+              <img
+                src={avatar}
+                alt={name}
+                style={{
+                  width: 44, height: 44, borderRadius: "50%", objectFit: "cover", flexShrink: 0,
+                  border: "2px solid var(--primary-container)",
+                }}
+              />
               <div style={{ minWidth: 0, flex: 1 }}>
                 <p style={{ fontSize: 14, fontWeight: 700, color: "var(--on-surface)", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{name}</p>
                 <p style={{ fontSize: 12, color: "var(--outline)", margin: 0 }}>{course} · {time}</p>

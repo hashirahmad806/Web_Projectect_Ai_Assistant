@@ -6,6 +6,7 @@
 
 import { Route, Routes } from "react-router-dom";
 import Shell           from "./components/Shell";
+import ProtectedRoute  from "./components/ProtectedRoute";
 import HomeScreen      from "./screens/HomeScreen";
 import ChatScreen      from "./screens/ChatScreen";
 import VoiceScreen     from "./screens/VoiceScreen";
@@ -37,20 +38,23 @@ export default function App() {
         <Route path="/login"    element={<LoginScreen setAuthToken={setAuthToken} />} />
         <Route path="/register" element={<RegisterScreen setAuthToken={setAuthToken} />} />
 
-        {/* ── App pages with sidebar Shell ── */}
+        {/* ── App pages with sidebar Shell (protected) ── */}
         <Route path="/*" element={
-          <Shell>
-            <Routes>
-              <Route path="/chat"        element={<ChatScreen />}       />
-              <Route path="/voice"       element={<VoiceScreen />}      />
-              <Route path="/image"       element={<ImageScreen />}      />
-              <Route path="/history"     element={<HistoryScreen />}    />
-              <Route path="/about"       element={<AboutScreen />}      />
-              <Route path="/about/:slug" element={<DevProfileScreen />} />
-            </Routes>
-          </Shell>
+          <ProtectedRoute>
+            <Shell>
+              <Routes>
+                <Route path="/chat"        element={<ChatScreen />}       />
+                <Route path="/voice"       element={<VoiceScreen />}      />
+                <Route path="/image"       element={<ImageScreen />}      />
+                <Route path="/history"     element={<HistoryScreen />}    />
+                <Route path="/about"       element={<AboutScreen />}      />
+                <Route path="/about/:slug" element={<DevProfileScreen />} />
+              </Routes>
+            </Shell>
+          </ProtectedRoute>
         } />
       </Routes>
     </>
   );
 }
+

@@ -1,8 +1,11 @@
 /**
  * HomeScreen.jsx
  * Standalone landing page using the Lumina Academic design system.
+ * Integrates Lenis smooth scrolling and IntersectionObserver reveal animations.
  */
 
+import { useEffect, useRef, useCallback } from "react";
+import Lenis from "lenis";
 import {
   Bot, Camera, History, Mic, Sparkles, ArrowRight,
   BookOpen, Star, Code2, FlaskConical, BarChart3, Zap, GraduationCap,
@@ -10,6 +13,42 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import StudentComments from "../components/StudentComments";
+
+/**
+ * Custom hook: fades-in elements with [data-reveal] as they scroll into view.
+ */
+function useScrollReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll("[data-reveal]");
+    if (!els.length) return;
+
+    // Set initial hidden state
+    els.forEach(el => {
+      el.style.opacity = "0";
+      el.style.transform = "translateY(32px)";
+      el.style.transition = "opacity 0.7s cubic-bezier(.22,1,.36,1), transform 0.7s cubic-bezier(.22,1,.36,1)";
+    });
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const delay = entry.target.dataset.revealDelay || 0;
+            setTimeout(() => {
+              entry.target.style.opacity = "1";
+              entry.target.style.transform = "translateY(0)";
+            }, Number(delay));
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    els.forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+}
 
 const FEATURES = [
   {
@@ -100,6 +139,26 @@ const SUCCESS_STORIES = [
 ];
 
 export default function HomeScreen() {
+  // ── Lenis smooth scrolling ──
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    return () => lenis.destroy();
+  }, []);
+
+  // ── Scroll reveal for sections ──
+  useScrollReveal();
+
   return (
     <div style={{ background: "var(--surface)", minHeight: "100vh", position: "relative" }}>
       
@@ -152,10 +211,10 @@ export default function HomeScreen() {
       </nav>
 
       {/* ══ HERO SECTION ════════════════════════════════ */}
-      <section style={{ position: "relative", zIndex: 1, padding: "80px var(--spacing-stack-md)", textAlign: "center" }}>
+      <section data-reveal style={{ position: "relative", zIndex: 1, padding: "80px var(--spacing-stack-md)", textAlign: "center" }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
           
-          <div style={{ display: "flex", justifyContent: "center", gap: 12, marginBottom: 32 }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: 12, marginBottom: 32, flexWrap: "wrap" }}>
             <span className="label-caps" style={{
               padding: "6px 14px", borderRadius: "var(--radius-full)",
               background: "var(--surface-container)", color: "var(--primary)"
@@ -191,10 +250,10 @@ export default function HomeScreen() {
       </section>
 
       {/* ══ STATS ═══════════════════════════════════════ */}
-      <section style={{ position: "relative", zIndex: 1, padding: "0 var(--spacing-stack-md) 64px" }}>
+      <section data-reveal style={{ position: "relative", zIndex: 1, padding: "0 var(--spacing-stack-md) 64px" }}>
         <div style={{ maxWidth: "var(--container-max)", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 24 }}>
-          {STATS.map(({ value, label }) => (
-            <div key={label} className="lumina-card" style={{ padding: "32px 24px", textAlign: "center" }}>
+          {STATS.map(({ value, label }, i) => (
+            <div key={label} data-reveal data-reveal-delay={i * 100} className="lumina-card" style={{ padding: "32px 24px", textAlign: "center" }}>
               <p style={{ fontSize: 36, fontWeight: 800, color: "var(--primary)", marginBottom: 8, letterSpacing: "-0.03em" }}>{value}</p>
               <p className="label-caps" style={{ color: "var(--on-surface-variant)" }}>{label}</p>
             </div>
@@ -203,7 +262,7 @@ export default function HomeScreen() {
       </section>
 
       {/* ══ MAIN CONTENT (FEATURES + SIDEBAR) ════════════ */}
-      <section id="features" style={{ position: "relative", zIndex: 1, padding: "0 var(--spacing-stack-md) 64px" }}>
+      <section id="features" data-reveal style={{ position: "relative", zIndex: 1, padding: "0 var(--spacing-stack-md) 64px" }}>
         <div className="grid lg:grid-cols-[1fr_340px] gap-8" style={{ maxWidth: "var(--container-max)", margin: "0 auto" }}>
           
           {/* LEFT COLUMN: Features & Community */}
@@ -214,8 +273,8 @@ export default function HomeScreen() {
             
             {/* Feature Cards Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {FEATURES.map(({ icon: Icon, title, desc, to, badge }) => (
-                <Link key={title} to={to} className="lumina-card" style={{
+              {FEATURES.map(({ icon: Icon, title, desc, to, badge }, i) => (
+                <Link key={title} to={to} data-reveal data-reveal-delay={i * 80} className="lumina-card" style={{
                   padding: 24, textDecoration: "none", display: "flex", flexDirection: "column", gap: 16
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -235,7 +294,7 @@ export default function HomeScreen() {
             </div>
 
             {/* Student Community */}
-            <div id="community" style={{ marginTop: 16 }}>
+            <div id="community" data-reveal style={{ marginTop: 16 }}>
               <StudentComments />
             </div>
           </div>
@@ -244,7 +303,7 @@ export default function HomeScreen() {
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             
             {/* Smart Prompts */}
-            <div className="lumina-card" style={{ padding: 24 }}>
+            <div data-reveal className="lumina-card" style={{ padding: 24 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
                 <BookOpen size={20} color="var(--primary)" />
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: "var(--on-surface)" }}>Smart Prompts</h3>
@@ -260,7 +319,7 @@ export default function HomeScreen() {
             </div>
 
             {/* How It Works Timeline */}
-            <div className="lumina-card" id="howitworks" style={{ padding: 24 }}>
+            <div data-reveal className="lumina-card" id="howitworks" style={{ padding: 24 }}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: "var(--on-surface)", marginBottom: 20 }}>How it works</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: 24, position: "relative" }}>
                 
@@ -286,7 +345,7 @@ export default function HomeScreen() {
       </section>
 
       {/* ══ CS & DATA SCIENCE ═════════════════════════════ */}
-      <section style={{ padding: "80px var(--spacing-stack-md)", background: "var(--surface-container-lowest)" }}>
+      <section data-reveal style={{ padding: "80px var(--spacing-stack-md)", background: "var(--surface-container-lowest)" }}>
         <div style={{ maxWidth: "var(--container-max)", margin: "0 auto", textAlign: "center" }}>
           
           <h2 className="headline-md" style={{ color: "var(--on-surface)", marginBottom: 16, fontSize: 36, letterSpacing: "-0.02em" }}>
@@ -297,8 +356,8 @@ export default function HomeScreen() {
           </p>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 24, marginBottom: 48, textAlign: "left" }}>
-            {CS_FEATURES.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="lumina-card" style={{ padding: 32, background: "var(--surface)" }}>
+            {CS_FEATURES.map(({ icon: Icon, title, desc }, i) => (
+              <div key={title} data-reveal data-reveal-delay={i * 100} className="lumina-card" style={{ padding: 32, background: "var(--surface)" }}>
                 <div style={{ width: 48, height: 48, borderRadius: "var(--radius-lg)", background: "var(--surface-container)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
                   <Icon size={24} color="var(--primary)" />
                 </div>
@@ -310,7 +369,7 @@ export default function HomeScreen() {
 
           <div className="lumina-card" style={{ padding: "24px 48px", display: "flex", alignItems: "center", justifyContent: "center", gap: 32, flexWrap: "wrap", background: "var(--surface)" }}>
             <span className="label-caps" style={{ color: "var(--on-surface-variant)", letterSpacing: "0.1em" }}>SUPPORTED TECH STACK</span>
-            <div style={{ display: "flex", gap: 24, alignItems: "center", color: "var(--primary)", fontWeight: 700, fontSize: 14 }}>
+            <div style={{ display: "flex", gap: 24, alignItems: "center", color: "var(--primary)", fontWeight: 700, fontSize: 14, flexWrap: "wrap" }}>
               <span style={{ display: "flex", alignItems: "center", gap: 6 }}><Code2 size={16}/> Python</span>
               <span style={{ display: "flex", alignItems: "center", gap: 6 }}><TerminalSquare size={16}/> JavaScript</span>
               <span style={{ display: "flex", alignItems: "center", gap: 6 }}><Database size={16}/> SQL</span>
@@ -323,7 +382,7 @@ export default function HomeScreen() {
       </section>
 
       {/* ══ SUCCESS STORIES CTA ═══════════════════════════ */}
-      <section style={{ padding: "80px var(--spacing-stack-md)", background: "var(--surface)" }}>
+      <section data-reveal style={{ padding: "80px var(--spacing-stack-md)", background: "var(--surface)" }}>
         <div style={{ maxWidth: "var(--container-max)", margin: "0 auto", textAlign: "center" }}>
           
           <h2 className="headline-md" style={{ color: "var(--on-surface)", marginBottom: 16, fontSize: 36, letterSpacing: "-0.02em" }}>
@@ -334,8 +393,8 @@ export default function HomeScreen() {
           </p>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 24, marginBottom: 48, textAlign: "left" }}>
-            {SUCCESS_STORIES.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="lumina-card" style={{ padding: 32, background: "var(--surface-container-low)" }}>
+            {SUCCESS_STORIES.map(({ icon: Icon, title, desc }, i) => (
+              <div key={title} data-reveal data-reveal-delay={i * 120} className="lumina-card" style={{ padding: 32, background: "var(--surface-container-low)" }}>
                 <div style={{ width: 48, height: 48, borderRadius: "var(--radius-lg)", background: "var(--primary-container)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
                   <Icon size={24} color="var(--on-primary-container)" />
                 </div>
@@ -363,7 +422,7 @@ export default function HomeScreen() {
               © {new Date().getFullYear()} Lumina Academic. Study Smarter.
             </p>
           </div>
-          <div style={{ display: "flex", gap: 24 }}>
+          <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
             {["Privacy Policy", "Terms of Service", "Help Center"].map(link => (
               <a key={link} href="#" style={{ fontSize: 14, fontWeight: 600, color: "var(--outline)", textDecoration: "none" }}>{link}</a>
             ))}
@@ -373,3 +432,4 @@ export default function HomeScreen() {
     </div>
   );
 }
+
